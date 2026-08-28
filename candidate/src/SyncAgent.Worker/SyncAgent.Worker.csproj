@@ -11,6 +11,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Microsoft.Data.SqlClient" Version="7.0.2" />
     <PackageReference Include="Microsoft.Extensions.Hosting" Version="8.0.1" />
     <!-- Pinned to 8.0.1 to match Microsoft.Extensions.Hosting above - the latest
          WindowsServices package (10.x) requires Hosting >= 10.0.11 and fails restore
