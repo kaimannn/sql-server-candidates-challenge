@@ -19,10 +19,6 @@ public class SqlConnectionFactory(IConfiguration configuration) : ISqlConnection
     {
         var connectionString = configuration.GetConnectionString(ConnectionStringName);
 
-        // GetConnectionString returns "" (not null) for the empty placeholder in
-        // appsettings.json, which a plain `?? throw` would miss - IsNullOrWhiteSpace
-        // catches that case too, instead of surfacing a confusing low-level
-        // "ConnectionString property has not been initialized" error from SqlConnection.
         if (string.IsNullOrWhiteSpace(connectionString))
         {
             throw new InvalidOperationException(

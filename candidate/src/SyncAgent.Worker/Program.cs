@@ -3,6 +3,7 @@ using SyncAgent.Worker;
 using SyncAgent.Worker.Configuration;
 using SyncAgent.Worker.Data;
 using SyncAgent.Worker.Platform;
+using SyncAgent.Worker.Tasks;
 
 var builder = Host.CreateApplicationBuilder(args);
 
@@ -27,13 +28,18 @@ builder.Services.AddHttpClient<ISyncPlatformClient, SyncPlatformClient>((service
     client.DefaultRequestHeaders.Add("X-Api-Key", options.ApiKey);
 });
 
+builder.Services.AddSingleton<ISyncTaskHandler, GetCustomersTaskHandler>();
+builder.Services.AddSingleton<ISyncTaskHandler, GetProductsTaskHandler>();
+builder.Services.AddSingleton<ISyncTaskHandler, GetOrdersTaskHandler>();
+builder.Services.AddSingleton<ISyncTaskHandler, GetProductInventoryTaskHandler>();
+builder.Services.AddSingleton<ISyncTaskDispatcher, SyncTaskDispatcher>();
+
 builder.Services.AddHostedService<Worker>();
 
 var host = builder.Build();
 
 // Fail fast if AdventureWorks isn't reachable at startup - a bad connection string or
-// stopped SQL Server should surface immediately in the logs, not as a silent failure
-// on the first poll once step 2 adds the polling loop.
+// stopped SQL Server should surface immediately in the logs
 await using (var scope = host.Services.CreateAsyncScope())
 {
     var connectionFactory = scope.ServiceProvider.GetRequiredService<ISqlConnectionFactory>();
