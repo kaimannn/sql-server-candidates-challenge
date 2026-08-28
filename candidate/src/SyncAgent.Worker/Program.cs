@@ -1,5 +1,8 @@
+using Microsoft.Extensions.Options;
 using SyncAgent.Worker;
+using SyncAgent.Worker.Configuration;
 using SyncAgent.Worker.Data;
+using SyncAgent.Worker.Platform;
 
 var builder = Host.CreateApplicationBuilder(args);
 
@@ -13,6 +16,17 @@ builder.Services.AddWindowsService(options =>
 });
 
 builder.Services.AddSingleton<ISqlConnectionFactory, SqlConnectionFactory>();
+
+builder.Services.Configure<SyncPlatformOptions>(
+    builder.Configuration.GetSection(SyncPlatformOptions.SectionName));
+
+builder.Services.AddHttpClient<ISyncPlatformClient, SyncPlatformClient>((serviceProvider, client) =>
+{
+    var options = serviceProvider.GetRequiredService<IOptions<SyncPlatformOptions>>().Value;
+    client.BaseAddress = new Uri(options.BaseUrl);
+    client.DefaultRequestHeaders.Add("X-Api-Key", options.ApiKey);
+});
+
 builder.Services.AddHostedService<Worker>();
 
 var host = builder.Build();
