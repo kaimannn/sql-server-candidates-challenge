@@ -10,4 +10,9 @@ public interface ISyncPlatformClient
     /// Retrieves the next pending sync task, or null if the queue is empty (204).
     /// </summary>
     Task<SyncTask?> GetNextTaskAsync(CancellationToken cancellationToken = default);
+
+    /// <summary>
+    /// Posts the outcome of an executed task (success or failure) back to the platform.
+    /// </summary>
+    Task PostResultAsync(SyncResult result, CancellationToken cancellationToken = default);
 }
