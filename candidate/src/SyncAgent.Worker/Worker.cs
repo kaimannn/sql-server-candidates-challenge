@@ -65,7 +65,7 @@ public class Worker(
         logger.LogInformation("Sync Agent shutting down.");
     }
 
-    private async Task ProcessTaskAsync(SyncTask task, CancellationToken cancellationToken)
+    internal async Task ProcessTaskAsync(SyncTask task, CancellationToken cancellationToken)
     {
         SyncResult result;
         try
